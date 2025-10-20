@@ -46,11 +46,10 @@ This backend manages encrypted communication, room creation, and real-time messa
 ### 1️⃣ Clone the Repository
 ```bash
 git clone https://github.com/yourusername/aegischat-frontend.git
-cd aegischat-frontend
+cd aegischat-backend
 
 Environment Variable(.env): NEXT_PUBLIC_SOCKET_URL=http://localhost:5000
 
-
 npm install
-# or
-yarn install
+nodemon server.js
+
