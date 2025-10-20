@@ -2,6 +2,7 @@ const express = require("express")
 const http = require("http")
 const socketIO = require("socket.io")
 const cors = require("cors")
+const CryptoJS = require("crypto-js")
 require("dotenv").config()
 
 const app = express()
@@ -24,6 +25,11 @@ app.use(express.json())
 // Store active rooms and participants
 const rooms = new Map()
 
+// Generate a random room key
+function generateRoomKey() {
+  return CryptoJS.lib.WordArray.random(32).toString()
+}
+
 // Socket.IO connection
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id)
@@ -31,10 +37,21 @@ io.on("connection", (socket) => {
   // Create a new room
   socket.on("create_room", (callback) => {
     const roomId = Math.random().toString(36).substring(2, 8).toUpperCase()
-    rooms.set(roomId, { users: new Set([socket.id]), messages: [] })
+    const roomKey = generateRoomKey() // Generate encryption key for the room
+    
+    rooms.set(roomId, { 
+      users: new Set([socket.id]), 
+      messages: [],
+      encryptionKey: roomKey // Store the encryption key
+    })
+    
     socket.join(roomId)
     if (typeof callback === "function") {
-      callback({ success: true, roomId })
+      callback({ 
+        success: true, 
+        roomId,
+        roomKey // Send the encryption key to the room creator
+      })
     }
   })
 
@@ -49,11 +66,12 @@ io.on("connection", (socket) => {
     socket.join(roomId)
     room.users.add(socket.id)
 
-    // Send previous messages
+    // Send previous messages and room key
     if (typeof callback === "function") {
       callback({
         success: true,
-        messages: room.messages
+        messages: room.messages, // These messages are already encrypted
+        roomKey: room.encryptionKey // Share the encryption key with the new user
       })
     }
 
@@ -66,7 +84,7 @@ io.on("connection", (socket) => {
   })
 
   // Handle sending new messages
-  socket.on("send_message", ({ roomId, message, username }) => {
+  socket.on("send_message", ({ roomId, encryptedMessage, username }) => {
     const room = rooms.get(roomId)
     if (!room) return
 
@@ -74,9 +92,10 @@ io.on("connection", (socket) => {
       id: Date.now(),
       userId: socket.id,
       username,
-      message,
+      message: encryptedMessage, // Store encrypted message
       timestamp: new Date().toISOString()
     }
+    console.log("Encryptes:" , encryptedMessage)
 
     room.messages.push(messageData)
     io.to(roomId).emit("new_message", messageData)
