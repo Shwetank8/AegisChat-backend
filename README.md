@@ -1,13 +1,14 @@
-# 🔐 AegisChat — Frontend
+# 🔐 AegisChat — backend
 
-AegisChat is a **real-time, end-to-end encrypted chat application** built with **Next.js 14**, **Socket.IO**, and **Tailwind CSS**.  
-It features dynamic chat rooms, instant messaging, and a responsive UI that adapts seamlessly across all devices.
+A secure real-time chat server built using **Node.js**, **Express**, and **Socket.IO** featuring **end-to-end encryption (E2EE)** powered by **crypto-js**.
+This backend manages encrypted communication, room creation, and real-time messaging between connected clients.
 
 ---
 
 ## 🚀 Tech Stack
 
 - **Next.js 14 (App Router)**
+- **CryptoJS**
 - **React 18**
 - **Socket.IO Client**
 - **Tailwind CSS**
@@ -20,6 +21,7 @@ It features dynamic chat rooms, instant messaging, and a responsive UI that adap
 ## Features
 
 - 💬 Real-time chat powered by Socket.IO
+- 🔐 End-to-end encryption (E2EE) using AES via crypto-js
 - ⚡ Smooth, responsive UI for mobile & desktop
 - 🧠 Persistent room sessions
 - 📋 Copyable Room ID*
@@ -44,11 +46,10 @@ It features dynamic chat rooms, instant messaging, and a responsive UI that adap
 ### 1️⃣ Clone the Repository
 ```bash
 git clone https://github.com/yourusername/aegischat-frontend.git
-cd aegischat-frontend
+cd aegischat-backend
 
 Environment Variable(.env): NEXT_PUBLIC_SOCKET_URL=http://localhost:5000
 
-
 npm install
-# or
-yarn install
+nodemon server.js
+
