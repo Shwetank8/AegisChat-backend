@@ -51,7 +51,7 @@ In **AegisChat**, AES is used to provide end-to-end encryption (E2EE) via Crypto
    cd AegisChat-backend
    
 2. Required environment variables:
-3. ```bash
+ ```bash
 `PORT`: Server port (default: 5000)
 `CORS_ORIGIN`: Frontend URL (default: http://localhost:3000)
 `REDIS_URL`: Redis connection URL (for Redis Cloud)
@@ -60,7 +60,7 @@ In **AegisChat**, AES is used to provide end-to-end encryption (E2EE) via Crypto
 `REDIS_HOST`: Redis host
 `REDIS_PORT`: Redis port
 `REDIS_PASSWORD`: Redis password
-  - 
+ ```
 3. Redis Setup
 - Create a free Redis Cloud account at https://redis.com/try-free/
 - Create a new database
