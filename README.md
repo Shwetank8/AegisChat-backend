@@ -1,5 +1,5 @@
 ## AegisChat-backend  
-AegisChat-backend is the server-side component powering the AegisChat application. It handles room creation, message exchange, real-time communication (via websockets), and data persistence. This backend provides the core API and socket logic to support the frontend chat interface, enabling efficient, scalable, and secure chat operations.
+AegisChat-backend is the server-side component powering the AegisChat application. It handles room creation, message exchange, file sharing, real-time communication (via websockets), and data persistence. This backend provides the core API and socket logic to support the frontend chat interface, enabling efficient, scalable, and secure chat operations.
 
 ---
 
@@ -14,11 +14,11 @@ AegisChat-backend is the server-side component powering the AegisChat applicatio
 
 ## Key Features  
 - 💬 Real-time chat powered by Socket.IO
+- 📁 Encrypted file upload and transfer using Multer
 - 🔐 End-to-end encryption (E2EE) using AES via crypto-js
 - ⚡ Smooth, responsive UI for mobile & desktop
 - 🧠 Persistent room sessions using redis
 - 📋 Copyable Room ID
-- 🎨 Elegant UI with Tailwind and Lucide icons
 - 🔄 Automatic scroll to latest message
 
 ---
@@ -70,6 +70,10 @@ In **AegisChat**, AES is used to provide end-to-end encryption (E2EE) via Crypto
 ```bash
 npm install
 nodemon server.js
+```
+---
+
+## Frontend for AegisChat- https://github.com/Shwetank8/AegisChat-frontend
  
 
 
