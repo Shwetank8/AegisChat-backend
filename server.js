@@ -2,6 +2,8 @@ const express = require("express")
 const http = require("http")
 const socketIO = require("socket.io")
 const cors = require("cors")
+const upload = require("./config/multer")
+const { encryptFile, decryptFile } = require("./utils/fileEncryption")
 
 const CryptoJS = require("crypto-js")
 
@@ -85,19 +87,47 @@ io.on("connection", (socket) => {
     })
   })
 
+  // Generate unique message ID
+  const generateMessageId = () => {
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+  };
+
   // Handle sending new messages
-  socket.on("send_message", ({ roomId, encryptedMessage, username }) => {
+  socket.on("send_message", ({ roomId, encryptedMessage, username, type = 'text' }) => {
     const room = rooms.get(roomId)
     if (!room) return
 
+    const timestamp = new Date().toISOString();
     const messageData = {
-      id: Date.now(),
+      id: generateMessageId(),
       userId: socket.id,
       username,
       message: encryptedMessage, // Store encrypted message
-      timestamp: new Date().toISOString()
+      timestamp,
+      type
     }
-    console.log("Encrypted:" , encryptedMessage)
+
+    room.messages.push(messageData)
+    io.to(roomId).emit("new_message", messageData)
+  })
+
+  // Handle file messages
+  socket.on("file_message", ({ roomId, fileData, username }) => {
+    const room = rooms.get(roomId)
+    if (!room) return
+
+    const timestamp = new Date().toISOString();
+    const messageData = {
+      id: generateMessageId(),
+      userId: socket.id,
+      username,
+      timestamp,
+      type: 'file',
+      fileData: {
+        ...fileData,
+        timestamp
+      }
+    }
 
     room.messages.push(messageData)
     io.to(roomId).emit("new_message", messageData)
@@ -124,6 +154,80 @@ io.on("connection", (socket) => {
     console.log("A user disconnected:", socket.id)
   })
 })
+
+// File upload endpoint
+app.post("/upload", upload.single("file"), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const { roomId } = req.body;
+    const room = rooms.get(roomId);
+
+    if (!room) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    // Encrypt file using room's encryption key
+    const encryptedFile = encryptFile(req.file.buffer, room.encryptionKey);
+
+    const fileData = {
+      id: Date.now(),
+      filename: req.file.originalname,
+      mimetype: req.file.mimetype,
+      encryptedData: encryptedFile,
+      timestamp: new Date().toISOString()
+    };
+
+    // Store file metadata in room
+    if (!room.files) room.files = new Map();
+    room.files.set(fileData.id, fileData);
+
+    // Emit file metadata to room
+    io.to(roomId).emit("file_shared", {
+      id: fileData.id,
+      filename: fileData.filename,
+      mimetype: fileData.mimetype,
+      timestamp: fileData.timestamp
+    });
+
+    res.json({ success: true, fileId: fileData.id });
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({ error: "Failed to process upload" });
+  }
+});
+
+// File download endpoint
+app.get("/files/:roomId/:fileId", (req, res) => {
+  try {
+    const { roomId, fileId } = req.params;
+    const room = rooms.get(roomId);
+
+    if (!room || !room.files) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    const fileData = room.files.get(parseInt(fileId));
+    if (!fileData) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    // Decrypt file
+    const decryptedBuffer = decryptFile(fileData.encryptedData, room.encryptionKey);
+
+    res.set({
+      'Content-Type': fileData.mimetype,
+      'Content-Disposition': `attachment; filename=${fileData.filename}`
+    });
+
+    res.send(decryptedBuffer);
+  } catch (error) {
+    console.error("Download error:", error);
+    res.status(500).json({ error: "Failed to process download" });
+  }
+});
 
 // Simple API to check server status
 app.get("/", (req, res) => res.send("Server is running!"))
