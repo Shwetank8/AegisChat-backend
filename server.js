@@ -2,7 +2,9 @@ const express = require("express")
 const http = require("http")
 const socketIO = require("socket.io")
 const cors = require("cors")
+
 const CryptoJS = require("crypto-js")
+
 require("dotenv").config()
 
 const app = express()
@@ -95,7 +97,7 @@ io.on("connection", (socket) => {
       message: encryptedMessage, // Store encrypted message
       timestamp: new Date().toISOString()
     }
-    console.log("Encryptes:" , encryptedMessage)
+    console.log("Encrypted:" , encryptedMessage)
 
     room.messages.push(messageData)
     io.to(roomId).emit("new_message", messageData)
