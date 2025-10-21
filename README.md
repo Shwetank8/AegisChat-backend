@@ -47,9 +47,31 @@ This backend manages encrypted communication, room creation, and real-time messa
 ```bash
 git clone https://github.com/yourusername/aegischat-frontend.git
 cd aegischat-backend
+```
 
-Environment Variable(.env): NEXT_PUBLIC_SOCKET_URL=http://localhost:5000
+### 2️⃣ Set up Environment Variables
+Copy `.env.example` to `.env` and update the values:
 
+```bash
+cp .env.example .env
+```
+
+Required environment variables:
+- `PORT`: Server port (default: 5000)
+- `CORS_ORIGIN`: Frontend URL (default: http://localhost:3000)
+- `REDIS_URL`: Redis connection URL (for Redis Cloud)
+  - OR use individual settings:
+  - `REDIS_HOST`: Redis host
+  - `REDIS_PORT`: Redis port
+  - `REDIS_PASSWORD`: Redis password
+
+### 3️⃣ Redis Setup
+1. Create a free Redis Cloud account at https://redis.com/try-free/
+2. Create a new database
+3. Copy the connection details to your .env file
+
+### 4️⃣ Install Dependencies & Run
+```bash
 npm install
 nodemon server.js
 
