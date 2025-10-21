@@ -1,5 +1,5 @@
 ## AegisChat-backend  
-AegisChat-backend is the server-side component powering the AegisChat application. It handles user authentication, message exchange, real-time communication (via websockets or similar), and database persistence. This backend provides the core API and socket logic to support the frontend chat interface, enabling efficient, scalable, and secure chat operations.
+AegisChat-backend is the server-side component powering the AegisChat application. It handles room creation, message exchange, real-time communication (via websockets), and data persistence. This backend provides the core API and socket logic to support the frontend chat interface, enabling efficient, scalable, and secure chat operations.
 
 ---
 
