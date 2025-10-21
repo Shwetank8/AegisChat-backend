@@ -35,7 +35,7 @@ AegisChat-backend is the server-side component powering the AegisChat applicatio
 ## AES 
 AES (Advanced Encryption Standard) is a symmetric encryption algorithm used worldwide to protect sensitive data. AES works by converting plaintext (readable data) into ciphertext (encrypted data) using a secret key, and the same key is required to decrypt it back to plaintext.
 
-# 🔒 Key Features:
+🔒 Key Features:
 - **Symmetric encryption**: the same key is used for both encryption and decryption.
 - **Fast and secure**: optimized for performance while maintaining strong protection.
 - **Resistant to attacks**: AES is considered cryptographically secure when implemented correctly.
@@ -51,14 +51,15 @@ In **AegisChat**, AES is used to provide end-to-end encryption (E2EE) via Crypto
    cd AegisChat-backend
    
 2. Required environment variables:
-- `PORT`: Server port (default: 5000)
-- `CORS_ORIGIN`: Frontend URL (default: http://localhost:3000)
-- `REDIS_URL`: Redis connection URL (for Redis Cloud)
-  - OR use individual settings:
-  - `REDIS_USERNAME`: Redis username
-  - `REDIS_HOST`: Redis host
-  - `REDIS_PORT`: Redis port
-  - `REDIS_PASSWORD`: Redis password
+3. ```bash
+`PORT`: Server port (default: 5000)
+`CORS_ORIGIN`: Frontend URL (default: http://localhost:3000)
+`REDIS_URL`: Redis connection URL (for Redis Cloud)
+   OR use individual settings:
+`REDIS_USERNAME`: Redis username
+`REDIS_HOST`: Redis host
+`REDIS_PORT`: Redis port
+`REDIS_PASSWORD`: Redis password
   - 
 3. Redis Setup
 - Create a free Redis Cloud account at https://redis.com/try-free/
